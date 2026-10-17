@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#130f11">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fiche d'appel – Fiqh 4ème année</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #130f11; --surface: #1c1518; --ink: #f3ebe8; --muted: #ac9a9e;
+    --accent: #7b1e30; --accent-hover: #912a3f; --accent-ink: #ffffff;
+    --soft: #e2b8c0; --line: #35282c; --gold: #c8a96a;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 30rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+  .date { color: var(--gold); margin: 0 0 .5rem; font-size: .9rem; letter-spacing: .02em; }
+  h1 { font: 600 2rem/1.15 Georgia, "Iowan Old Style", serif; margin: 0 0 .5rem; }
+  .intro { color: var(--muted); margin: 0 0 1.75rem; max-width: 34ch; }
+  .actions { display: grid; gap: .75rem; }
+  .btn { display: flex; align-items: center; justify-content: center; min-height: 3.25rem;
+    padding: .75rem 1rem; border-radius: .75rem; border: 1.5px solid var(--soft);
+    font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+    background: transparent; color: var(--soft); }
+  .btn:hover { background: var(--surface); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    font-size: 1.1rem; min-height: 3.75rem; }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .status { min-height: 1.5rem; margin: 1rem 0 0; color: var(--gold); font-weight: 600; }
+  .warn { background: var(--surface); border: 1px solid var(--accent); border-radius: .75rem;
+    padding: .75rem 1rem; margin: 0 0 1.25rem; display: none; }
+  .link { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line);
+    color: var(--muted); font-size: .85rem; word-break: break-all; }
+</style>
+</head>
+<body>
+<main>
+  <p class="date" id="date"></p>
+  <h1 id="classe"></h1>
+  <p class="intro">Envoie ce lien à ta classe le jour du cours. Chaque élève choisit son nom et indique sa présence.</p>
+
+  <p class="warn" id="warn">Le lien du formulaire n'est pas encore renseigné. Modifie FORM_URL dans le fichier.</p>
+
+  <div class="actions">
+    <a class="btn primary" id="whatsapp" target="_blank" rel="noopener">Envoyer sur WhatsApp</a>
+    <button class="btn" id="copier" type="button">Copier le lien</button>
+    <a class="btn" id="ouvrir" target="_blank" rel="noopener">Accéder au formulaire</a>
+  </div>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <p class="link" id="lien"></p>
+</main>
+
+<script>
+  // ---- À MODIFIER ----
+  const CLASSE   = "Fiqh 4ème année";
+  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdpJ9hFTSXfwco8vM_UGRhxYG9OPjXw8VzPRetkCPCa_VQp9A/viewform"; // lien répondant, se termine par /viewform
+  // --------------------
+
+  const ok = FORM_URL.startsWith("https://");
+  const dateTxt = new Date().toLocaleDateString("fr-FR",
+    { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+  document.getElementById("date").textContent = cap(dateTxt);
+  document.getElementById("classe").textContent = "Fiche d'appel – " + CLASSE;
+  document.title = "Fiche d'appel – " + CLASSE;
+
+  const ouvrir = document.getElementById("ouvrir");
+  const wa = document.getElementById("whatsapp");
+  const status = document.getElementById("status");
+
+  if (!ok) {
+    document.getElementById("warn").style.display = "block";
+  } else {
+    ouvrir.href = FORM_URL;
+    const msg = "Assalamu alaykum wa rahmatullahi wa barakatuh,\n\n" +
+      "Fiche d'appel " + CLASSE + " – cours du " + dateTxt +
+      ".\nMerci de la remplir avant le début du cours :\n" + FORM_URL +
+      "\n\nBarakallahu fikum.";
+    wa.href = "https://wa.me/?text=" + encodeURIComponent(msg);
+    document.getElementById("lien").textContent = FORM_URL;
+  }
+
+  document.getElementById("copier").addEventListener("click", async () => {
+    if (!ok) { status.textContent = "Lien du formulaire manquant."; return; }
+    try {
+      await navigator.clipboard.writeText(FORM_URL);
+      status.textContent = "Lien copié.";
+    } catch (e) {
+      const t = document.createElement("textarea");
+      t.value = FORM_URL; document.body.appendChild(t); t.select();
+      try { document.execCommand("copy"); status.textContent = "Lien copié."; }
+      catch (_) { status.textContent = "Copie impossible, sélectionne le lien affiché en bas."; }
+      t.remove();
+    }
+  });
+</script>
+</body>
+</html>
