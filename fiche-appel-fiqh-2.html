@@ -2,97 +2,92 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#130f11">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
 <title>Fiche d'appel – Fiqh 2ème année</title>
 <style>
   :root {
-    --bg: #eef3f1; --surface: #ffffff; --ink: #14231f; --muted: #5b6f69;
-    --accent: #0f4c45; --accent-ink: #ffffff; --line: #cfdcd7; --ok: #1d7a4f;
-    box-sizing: border-box;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #0e1815; --surface: #16241f; --ink: #e8f0ed; --muted: #9db2ab;
-      --accent: #5fc2a8; --accent-ink: #0b1a16; --line: #2a3d37; --ok: #6fd3a0; }
+    color-scheme: dark;
+    --bg: #130f11; --surface: #1c1518; --ink: #f3ebe8; --muted: #ac9a9e;
+    --accent: #7b1e30; --accent-hover: #912a3f; --accent-ink: #ffffff;
+    --soft: #e2b8c0; --line: #35282c; --gold: #c8a96a;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink);
     font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 30rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
-  .date { color: var(--muted); margin: 0 0 .5rem; font-size: .95rem; }
+  main { max-width: 30rem; margin: 0 auto;
+    padding: max(2rem, env(safe-area-inset-top)) 1.25rem max(3rem, env(safe-area-inset-bottom)); }
+  .date { color: var(--gold); margin: 0 0 .5rem; font-size: .9rem; letter-spacing: .02em; }
   h1 { font: 600 2rem/1.15 Georgia, "Iowan Old Style", serif; margin: 0 0 .5rem; }
   .intro { color: var(--muted); margin: 0 0 1.75rem; max-width: 34ch; }
+  .btn:focus-visible, .card:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
   .actions { display: grid; gap: .75rem; }
   .btn { display: flex; align-items: center; justify-content: center; min-height: 3.25rem;
-    padding: .75rem 1rem; border-radius: .75rem; border: 1.5px solid var(--accent);
+    padding: .75rem 1rem; border-radius: .75rem; border: 1.5px solid var(--soft);
     font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
-    background: transparent; color: var(--accent); }
-  .btn.primary { background: var(--accent); color: var(--accent-ink); font-size: 1.1rem; min-height: 3.75rem; }
-  .btn:focus-visible { outline: 3px solid var(--ok); outline-offset: 2px; }
-  .status { min-height: 1.5rem; margin: 1rem 0 0; color: var(--ok); font-weight: 600; }
-  .warn { background: var(--surface); border: 1px solid var(--line); border-radius: .75rem;
-    padding: .75rem 1rem; margin: 0 0 1.25rem; display: none; }
-  .link { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line);
-    color: var(--muted); font-size: .85rem; word-break: break-all; }
+    background: transparent; color: var(--soft); }
+  .btn:hover { background: var(--surface); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    font-size: 1.1rem; min-height: 3.75rem; }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .sep { margin: 1.75rem 0 .75rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
+    color: var(--muted); font-size: .9rem; }
+  .status { min-height: 1.5rem; margin: 1rem 0 0; color: var(--gold); font-weight: 600; }
+  .link { margin-top: 1.25rem; color: var(--muted); font-size: .85rem; word-break: break-all; }
 </style>
 </head>
 <body>
 <main>
   <p class="date" id="date"></p>
-  <h1 id="classe"></h1>
+  <h1>Fiche d'appel – Fiqh 2ème année</h1>
   <p class="intro">Envoie ce lien à ta classe le jour du cours. Chaque élève choisit son nom et indique sa présence.</p>
 
-  <p class="warn" id="warn">Le lien du formulaire n'est pas encore renseigné. Modifie FORM_URL dans le fichier.</p>
-
   <div class="actions">
-    <a class="btn primary" id="ouvrir" target="_blank" rel="noopener">Ouvrir la fiche d'appel</a>
+    <a class="btn primary" id="whatsapp" target="_blank" rel="noopener">Envoyer sur WhatsApp</a>
     <button class="btn" id="copier" type="button">Copier le lien</button>
-    <a class="btn" id="whatsapp" target="_blank" rel="noopener">Envoyer sur WhatsApp</a>
+    <a class="btn" id="ouvrir" target="_blank" rel="noopener">Accéder au formulaire</a>
   </div>
   <p class="status" id="status" role="status" aria-live="polite"></p>
   <p class="link" id="lien"></p>
+
+  <p class="sep">Suivi des présences</p>
+  <div class="actions">
+    <a class="btn" id="reponses" target="_blank" rel="noopener">Voir les réponses (Google Sheet)</a>
+  </div>
 </main>
 
 <script>
-  // ---- À MODIFIER ----
-  const CLASSE   = "Fiqh 2ème année";
-  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf7ETH0XM0TdnGdTt1qUPuYMmkstBnlZssC8JiX4C1jA0h7_A/viewform"; // lien répondant, se termine par /viewform
-  // --------------------
+  const CLASSE    = "Fiqh 2ème année";
+  const FORM_URL  = "https://docs.google.com/forms/d/e/1FAIpQLSfPNiMqENooaXSxhEEn2eWfEU_s1qtyzPEvDOUx9U42352-fg/viewform";   // lien complet du formulaire
+  const SHORT_URL = "https://forms.gle/vWdYGigpNrGM137L6";  // lien court, celui donné aux élèves
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/1YEJwn7oebBHWEC2AV0jTfbUhLwY2naK9d0WIpcZ9qvQ/edit?usp=sharing";  // réponses, pour le délégué
 
-  const ok = FORM_URL.startsWith("https://");
   const dateTxt = new Date().toLocaleDateString("fr-FR",
     { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  document.getElementById("date").textContent = dateTxt.charAt(0).toUpperCase() + dateTxt.slice(1);
 
-  document.getElementById("date").textContent = cap(dateTxt);
-  document.getElementById("classe").textContent = "Fiche d'appel – " + CLASSE;
-  document.title = "Fiche d'appel – " + CLASSE;
+  document.getElementById("ouvrir").href = FORM_URL;
+  document.getElementById("reponses").href = SHEET_URL;
+  document.getElementById("lien").textContent = SHORT_URL;
 
-  const ouvrir = document.getElementById("ouvrir");
-  const wa = document.getElementById("whatsapp");
+  const msg = "Assalamu alaykum wa rahmatullahi wa barakatuh,\n\n" +
+    "Fiche d'appel " + CLASSE + " – cours du " + dateTxt +
+    ".\nMerci de la remplir avant le début du cours :\n" + SHORT_URL +
+    "\n\nBarakallahu fikum.";
+  document.getElementById("whatsapp").href = "https://wa.me/?text=" + encodeURIComponent(msg);
+
   const status = document.getElementById("status");
-
-  if (!ok) {
-    document.getElementById("warn").style.display = "block";
-  } else {
-    ouvrir.href = FORM_URL;
-    const msg = "Fiche d'appel " + CLASSE + " – cours du " + dateTxt +
-      ".\nMerci de la remplir avant le début du cours :\n" + FORM_URL;
-    wa.href = "https://wa.me/?text=" + encodeURIComponent(msg);
-    document.getElementById("lien").textContent = FORM_URL;
-  }
-
   document.getElementById("copier").addEventListener("click", async () => {
-    if (!ok) { status.textContent = "Lien du formulaire manquant."; return; }
     try {
-      await navigator.clipboard.writeText(FORM_URL);
+      await navigator.clipboard.writeText(SHORT_URL);
       status.textContent = "Lien copié.";
     } catch (e) {
       const t = document.createElement("textarea");
-      t.value = FORM_URL; document.body.appendChild(t); t.select();
+      t.value = SHORT_URL; document.body.appendChild(t); t.select();
       try { document.execCommand("copy"); status.textContent = "Lien copié."; }
-      catch (_) { status.textContent = "Copie impossible, sélectionne le lien affiché en bas."; }
+      catch (_) { status.textContent = "Copie impossible, sélectionne le lien affiché."; }
       t.remove();
     }
   });

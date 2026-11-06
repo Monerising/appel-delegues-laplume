@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="theme-color" content="#130f11">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Fiche d'appel – Fiqh 1 / Culture musulmane</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #130f11; --surface: #1c1518; --ink: #f3ebe8; --muted: #ac9a9e;
+    --accent: #7b1e30; --accent-hover: #912a3f; --accent-ink: #ffffff;
+    --soft: #e2b8c0; --line: #35282c; --gold: #c8a96a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 30rem; margin: 0 auto;
+    padding: max(2rem, env(safe-area-inset-top)) 1.25rem max(3rem, env(safe-area-inset-bottom)); }
+  .date { color: var(--gold); margin: 0 0 .5rem; font-size: .9rem; letter-spacing: .02em; }
+  h1 { font: 600 2rem/1.15 Georgia, "Iowan Old Style", serif; margin: 0 0 .5rem; }
+  .intro { color: var(--muted); margin: 0 0 1.75rem; max-width: 34ch; }
+  .btn:focus-visible, .card:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+  .actions { display: grid; gap: .75rem; }
+  .btn { display: flex; align-items: center; justify-content: center; min-height: 3.25rem;
+    padding: .75rem 1rem; border-radius: .75rem; border: 1.5px solid var(--soft);
+    font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+    background: transparent; color: var(--soft); }
+  .btn:hover { background: var(--surface); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    font-size: 1.1rem; min-height: 3.75rem; }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .sep { margin: 1.75rem 0 .75rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
+    color: var(--muted); font-size: .9rem; }
+  .status { min-height: 1.5rem; margin: 1rem 0 0; color: var(--gold); font-weight: 600; }
+  .link { margin-top: 1.25rem; color: var(--muted); font-size: .85rem; word-break: break-all; }
+</style>
+</head>
+<body>
+<main>
+  <p class="date" id="date"></p>
+  <h1>Fiche d'appel – Fiqh 1 / Culture musulmane</h1>
+  <p class="intro">Envoie ce lien à ta classe le jour du cours. Chaque élève choisit son nom et indique sa présence.</p>
+
+  <div class="actions">
+    <a class="btn primary" id="whatsapp" target="_blank" rel="noopener">Envoyer sur WhatsApp</a>
+    <button class="btn" id="copier" type="button">Copier le lien</button>
+    <a class="btn" id="ouvrir" target="_blank" rel="noopener">Accéder au formulaire</a>
+  </div>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <p class="link" id="lien"></p>
+
+  <p class="sep">Suivi des présences</p>
+  <div class="actions">
+    <a class="btn" id="reponses" target="_blank" rel="noopener">Voir les réponses (Google Sheet)</a>
+  </div>
+</main>
+
+<script>
+  const CLASSE    = "Fiqh 1 / Culture musulmane";
+  const FORM_URL  = "https://docs.google.com/forms/d/e/1FAIpQLSeWo_znY6eYuYgZLLDRMXxV9uAxBkxcH7A4AxfXcKGQw9eQoA/viewform";   // lien complet du formulaire
+  const SHORT_URL = "https://forms.gle/aRBBUYa5XsRqjHaB8";  // lien court, celui donné aux élèves
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/1iKpUcAxKFJb69aL9ZuHc1doH4y4ULVLFhJWypgEHSx0/edit?usp=sharing";  // réponses, pour le délégué
+
+  const dateTxt = new Date().toLocaleDateString("fr-FR",
+    { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  document.getElementById("date").textContent = dateTxt.charAt(0).toUpperCase() + dateTxt.slice(1);
+
+  document.getElementById("ouvrir").href = FORM_URL;
+  document.getElementById("reponses").href = SHEET_URL;
+  document.getElementById("lien").textContent = SHORT_URL;
+
+  const msg = "Assalamu alaykum wa rahmatullahi wa barakatuh,\n\n" +
+    "Fiche d'appel " + CLASSE + " – cours du " + dateTxt +
+    ".\nMerci de la remplir avant le début du cours :\n" + SHORT_URL +
+    "\n\nBarakallahu fikum.";
+  document.getElementById("whatsapp").href = "https://wa.me/?text=" + encodeURIComponent(msg);
+
+  const status = document.getElementById("status");
+  document.getElementById("copier").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(SHORT_URL);
+      status.textContent = "Lien copié.";
+    } catch (e) {
+      const t = document.createElement("textarea");
+      t.value = SHORT_URL; document.body.appendChild(t); t.select();
+      try { document.execCommand("copy"); status.textContent = "Lien copié."; }
+      catch (_) { status.textContent = "Copie impossible, sélectionne le lien affiché."; }
+      t.remove();
+    }
+  });
+</script>
+</body>
+</html>
