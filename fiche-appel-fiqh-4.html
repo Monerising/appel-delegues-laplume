@@ -32,8 +32,6 @@
   .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
     font-size: 1.1rem; min-height: 3.75rem; }
   .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-  .sep { margin: 1.75rem 0 .75rem; padding-top: 1.25rem; border-top: 1px solid var(--line);
-    color: var(--muted); font-size: .9rem; }
   .status { min-height: 1.5rem; margin: 1rem 0 0; color: var(--gold); font-weight: 600; }
   .link { margin-top: 1.25rem; color: var(--muted); font-size: .85rem; word-break: break-all; }
 </style>
@@ -51,25 +49,18 @@
   </div>
   <p class="status" id="status" role="status" aria-live="polite"></p>
   <p class="link" id="lien"></p>
-
-  <p class="sep">Suivi des présences</p>
-  <div class="actions">
-    <a class="btn" id="reponses" target="_blank" rel="noopener">Voir les réponses (Google Sheet)</a>
-  </div>
 </main>
 
 <script>
   const CLASSE    = "Fiqh 4ème année";
   const FORM_URL  = "https://docs.google.com/forms/d/e/1FAIpQLSdpJ9hFTSXfwco8vM_UGRhxYG9OPjXw8VzPRetkCPCa_VQp9A/viewform";   // lien complet du formulaire
   const SHORT_URL = "https://forms.gle/kzwrqF3AJUYUympn8";  // lien court, celui donné aux élèves
-  const SHEET_URL = "https://docs.google.com/spreadsheets/d/1nLll4tt39v1cWiJ32hg0O0uEs4etwU2bzuqpNyKhfU4/edit?usp=sharing";  // réponses, pour le délégué
 
   const dateTxt = new Date().toLocaleDateString("fr-FR",
     { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   document.getElementById("date").textContent = dateTxt.charAt(0).toUpperCase() + dateTxt.slice(1);
 
   document.getElementById("ouvrir").href = FORM_URL;
-  document.getElementById("reponses").href = SHEET_URL;
   document.getElementById("lien").textContent = SHORT_URL;
 
   const msg = "Assalamu alaykum wa rahmatullahi wa barakatuh,\n\n" +
